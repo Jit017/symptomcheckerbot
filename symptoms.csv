@@ -1,0 +1,125 @@
+symptom,condition
+fever,Common Cold
+headache,Migraine
+cough,Bronchitis
+sore throat,Strep Throat
+runny nose,Allergic Rhinitis
+nausea,Food Poisoning
+vomiting,Gastroenteritis
+diarrhea,Irritable Bowel Syndrome
+stomach pain,Gastritis
+chest pain,Angina
+shortness of breath,Asthma
+fatigue,Anemia
+dizziness,Vertigo
+back pain,Muscle Strain
+joint pain,Arthritis
+rash,Eczema
+itching,Dermatitis
+sneezing,Hay Fever
+congestion,Sinusitis
+body aches,Influenza
+fever,Influenza
+headache,Tension Headache
+cough,Pneumonia
+sore throat,Tonsillitis
+runny nose,Common Cold
+nausea,Migraine
+vomiting,Food Poisoning
+diarrhea,Gastroenteritis
+stomach pain,Peptic Ulcer
+chest pain,Heartburn
+shortness of breath,Bronchitis
+fatigue,Chronic Fatigue Syndrome
+dizziness,Low Blood Pressure
+back pain,Sciatica
+joint pain,Rheumatoid Arthritis
+rash,Psoriasis
+itching,Allergic Reaction
+sneezing,Common Cold
+congestion,Deviated Septum
+body aches,Fibromyalgia
+fever,Urinary Tract Infection
+headache,Cluster Headache
+cough,Whooping Cough
+sore throat,Laryngitis
+runny nose,Sinusitis
+nausea,Motion Sickness
+vomiting,Norovirus
+diarrhea,Food Poisoning
+stomach pain,Appendicitis
+chest pain,Pneumonia
+shortness of breath,Pneumothorax
+fatigue,Hypothyroidism
+dizziness,Inner Ear Infection
+back pain,Herniated Disc
+joint pain,Gout
+rash,Chickenpox
+itching,Scabies
+sneezing,Allergic Rhinitis
+congestion,Nasal Polyps
+body aches,Lyme Disease
+muscle weakness,Myasthenia Gravis
+blurred vision,Diabetes
+frequent urination,Diabetes
+excessive thirst,Diabetes
+weight loss,Hyperthyroidism
+weight gain,Hypothyroidism
+hair loss,Alopecia
+dry skin,Dermatitis
+oily skin,Seborrheic Dermatitis
+acne,Hormonal Imbalance
+irregular periods,Polycystic Ovary Syndrome
+heavy periods,Endometriosis
+pelvic pain,Ovarian Cysts
+mood swings,Premenstrual Syndrome
+anxiety,Generalized Anxiety Disorder
+depression,Major Depressive Disorder
+insomnia,Sleep Disorder
+restless sleep,Sleep Apnea
+snoring,Obstructive Sleep Apnea
+memory problems,Alzheimer's Disease
+confusion,Dementia
+tremors,Parkinson's Disease
+stiff muscles,Parkinson's Disease
+difficulty swallowing,Dysphagia
+hoarse voice,Vocal Cord Paralysis
+ear pain,Otitis Media
+hearing loss,Conductive Hearing Loss
+tinnitus,Tinnitus
+dry eyes,Sjögren's Syndrome
+red eyes,Conjunctivitis
+eye pain,Glaucoma
+double vision,Multiple Sclerosis
+numbness,Peripheral Neuropathy
+tingling,Carpal Tunnel Syndrome
+swelling,Heart Failure
+rapid heartbeat,Arrhythmia
+slow heartbeat,Bradycardia
+high blood pressure,Hypertension
+low blood pressure,Hypotension
+pale skin,Anemia
+yellowing skin,Jaundice
+dark urine,Hepatitis
+light colored stool,Gallbladder Disease
+constipation,Hemorrhoids
+bloody stool,Inflammatory Bowel Disease
+burning urination,Cystitis
+cloudy urine,Kidney Infection
+kidney pain,Kidney Stones
+leg cramps,Restless Leg Syndrome
+cold hands,Raynaud's Disease
+hot flashes,Menopause
+night sweats,Hyperthyroidism
+excessive sweating,Hyperhidrosis
+bad breath,Gingivitis
+tooth pain,Dental Abscess
+jaw pain,Temporomandibular Joint Disorder
+neck pain,Cervical Spondylosis
+shoulder pain,Rotator Cuff Injury
+elbow pain,Tennis Elbow
+wrist pain,Carpal Tunnel Syndrome
+hip pain,Hip Arthritis
+knee pain,Osteoarthritis
+ankle pain,Sprain
+foot pain,Plantar Fasciitis 
