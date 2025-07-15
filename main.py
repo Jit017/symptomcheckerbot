@@ -1309,25 +1309,22 @@ def main():
                         
                         translated_condition = translate_text(pred['condition'], 'hi') if translate_results else pred['condition']
                         
+                        # Create enhanced condition card (following the same pattern as working HTML)
                         st.markdown(f"""
                         <div class="condition-card">
                             <div class="condition-title">
                                 🤖 {pred['condition']}
                             </div>
-                            
                             <div class="confidence-badge {confidence_class}">
                                 {confidence_icon} {confidence_text} AI Confidence
                             </div>
-                            
-                            <div class="match-score">
+                            <div style="color: {'#94a3b8' if st.session_state.dark_mode else '#6b7280'}; margin: 0.5rem 0;">
                                 🎯 <strong>ML Score:</strong> {confidence:.2%} confidence
                             </div>
-                            
-                            <div class="matched-symptoms">
+                            <div class="info-section">
                                 🧾 <strong>Input:</strong> {pred['symptom']}
                             </div>
-                            
-                            {f'<div class="translation-text">🌐 <strong>Hindi Translation:</strong> {translated_condition}</div>' if translate_results and translated_condition != pred['condition'] else ''}
+                            {f'<div class="translation-section">🌐 <strong>Hindi Translation:</strong> {translated_condition}</div>' if translate_results and translated_condition != pred['condition'] else ''}
                         </div>
                         """, unsafe_allow_html=True)
                         
