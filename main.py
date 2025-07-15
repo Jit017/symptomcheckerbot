@@ -20,6 +20,18 @@ try:
 except ImportError:
     PDF_AVAILABLE = False
 
+# ML prediction imports
+try:
+    from ml_predictor import (
+        predict_symptoms_ml, 
+        get_top_predictions_ml, 
+        is_ml_available, 
+        get_ml_model_info
+    )
+    ML_AVAILABLE = True
+except ImportError:
+    ML_AVAILABLE = False
+
 # Configure Streamlit page
 st.set_page_config(
     page_title="🩺 Symptom Checker Bot",
@@ -1013,6 +1025,35 @@ def main():
         st.markdown("---")
         st.header("🔧 Options")
         
+        # Prediction method selection
+        prediction_method = "rule_based"  # Default
+        if ML_AVAILABLE:
+            ml_info = get_ml_model_info()
+            if ml_info.get("status") == "Loaded":
+                st.markdown("#### 🤖 Prediction Method")
+                prediction_method = st.radio(
+                    "Choose prediction approach:",
+                    ["rule_based", "ml_based", "both"],
+                    format_func=lambda x: {
+                        "rule_based": "📋 Rule-Based Matching",
+                        "ml_based": "🤖 AI/ML Prediction", 
+                        "both": "🔄 Compare Both Methods"
+                    }[x],
+                    help="Rule-based uses exact matching, ML uses trained AI model"
+                )
+                
+                # Show ML model info
+                with st.expander("🔍 AI Model Information"):
+                    st.write(f"**Model Type:** {ml_info.get('model_type', 'Unknown')}")
+                    st.write(f"**Features:** {ml_info.get('features_count', 'Unknown')}")
+                    st.write(f"**Conditions:** {ml_info.get('classes_count', 'Unknown')}")
+                    st.write(f"**Created:** {ml_info.get('created_at', 'Unknown')[:19] if ml_info.get('created_at') != 'Unknown' else 'Unknown'}")
+            else:
+                st.warning("🤖 AI Model not available")
+                prediction_method = "rule_based"
+        else:
+            st.info("💡 AI predictions unavailable - using rule-based matching")
+        
         # Translation option
         translate_results = False
         if TRANSLATOR_AVAILABLE:
@@ -1131,11 +1172,25 @@ def main():
             
             st.markdown("---")
             
-            # Find matches
-            matches = find_symptom_matches(user_symptoms, df)
-            combined_conditions = get_combined_conditions(matches)
+            # Find matches based on selected method
+            if prediction_method in ["rule_based", "both"]:
+                # Rule-based matching
+                matches = find_symptom_matches(user_symptoms, df)
+                combined_conditions = get_combined_conditions(matches)
+            else:
+                matches = {}
+                combined_conditions = []
             
-            if combined_conditions:
+            # ML predictions
+            ml_predictions = []
+            if prediction_method in ["ml_based", "both"] and ML_AVAILABLE:
+                try:
+                    ml_predictions = predict_symptoms_ml(user_symptoms)
+                except Exception as e:
+                    st.error(f"ML prediction error: {str(e)}")
+            
+            # Show results based on method
+            if prediction_method == "rule_based" and combined_conditions:
                 st.markdown("### 🏥 Possible Medical Conditions")
                 st.markdown("*Sorted by severity and symptom match frequency:*")
                 
@@ -1228,6 +1283,103 @@ def main():
                                 st.write(f"  ... and {len(conditions) - 5} more")
                         else:
                             st.write(f"**{symptom.title()}** → No direct matches found")
+            
+            # ML Predictions Section
+            elif prediction_method == "ml_based" and ml_predictions:
+                st.markdown("### 🤖 AI-Powered Medical Predictions")
+                st.markdown("*Generated using trained machine learning model:*")
+                
+                # Display ML predictions
+                for i, pred in enumerate(ml_predictions):
+                    if pred['condition'] != "Model not loaded" and pred['condition'] != "Prediction error":
+                        # Determine confidence styling
+                        confidence = pred['confidence']
+                        if confidence >= 0.7:
+                            confidence_class = "confidence-high"
+                            confidence_icon = "🔴"
+                            confidence_text = "High"
+                        elif confidence >= 0.4:
+                            confidence_class = "confidence-medium"
+                            confidence_icon = "🟡"
+                            confidence_text = "Medium"
+                        else:
+                            confidence_class = "confidence-low"
+                            confidence_icon = "🔵"
+                            confidence_text = "Low"
+                        
+                        translated_condition = translate_text(pred['condition'], 'hi') if translate_results else pred['condition']
+                        
+                        st.markdown(f"""
+                        <div class="condition-card">
+                            <div class="condition-title">
+                                🤖 {pred['condition']}
+                            </div>
+                            
+                            <div class="confidence-badge {confidence_class}">
+                                {confidence_icon} {confidence_text} AI Confidence
+                            </div>
+                            
+                            <div class="match-score">
+                                🎯 <strong>ML Score:</strong> {confidence:.2%} confidence
+                            </div>
+                            
+                            <div class="matched-symptoms">
+                                🧾 <strong>Input:</strong> {pred['symptom']}
+                            </div>
+                            
+                            {f'<div class="translation-text">🌐 <strong>Hindi Translation:</strong> {translated_condition}</div>' if translate_results and translated_condition != pred['condition'] else ''}
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        if i < len(ml_predictions) - 1:
+                            st.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
+                
+                # ML Model insights
+                with st.expander("🔍 AI Model Insights"):
+                    st.write("**Model Predictions:**")
+                    for pred in ml_predictions:
+                        st.write(f"• **{pred['symptom']}** → {pred['condition']} ({pred['confidence']:.2%})")
+            
+            # Comparison Mode
+            elif prediction_method == "both" and (combined_conditions or ml_predictions):
+                st.markdown("### 🔄 Prediction Method Comparison")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("#### 📋 Rule-Based Results")
+                    if combined_conditions:
+                        for condition, frequency, severity in combined_conditions[:3]:
+                            st.markdown(f"""
+                            <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #0ea5e9;">
+                                <strong>{condition}</strong><br>
+                                <small>Matches: {frequency} symptoms | Severity: {severity}</small>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    else:
+                        st.info("No rule-based matches found")
+                
+                with col2:
+                    st.markdown("#### 🤖 AI-Based Results")
+                    if ml_predictions:
+                        for pred in ml_predictions[:3]:
+                            if pred['condition'] not in ["Model not loaded", "Prediction error"]:
+                                st.markdown(f"""
+                                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #22c55e;">
+                                    <strong>{pred['condition']}</strong><br>
+                                    <small>Input: {pred['symptom']} | Confidence: {pred['confidence']:.2%}</small>
+                                </div>
+                                """, unsafe_allow_html=True)
+                    else:
+                        st.info("No AI predictions available")
+                
+                # Comparison insights
+                st.markdown("#### 🔬 Method Comparison")
+                st.markdown("""
+                - **Rule-Based**: Uses exact symptom matching from medical database
+                - **AI-Based**: Uses machine learning to predict conditions from symptom patterns
+                - **Best Practice**: Compare both results and consult healthcare professionals
+                """)
             
             else:
                 # Enhanced no results section

@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# ML Models (can be regenerated)
+models/
+*.pkl
+
 # C extensions
 *.so
 
